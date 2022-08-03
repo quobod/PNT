@@ -147,15 +147,15 @@ parser.add_argument(
 parser.add_argument(
     "-c",
     "--cache",
-    choices=["yes", "no"],
-    help="Whether or not to refresh system's arp cache - e.g. yes or no. Works with the arp command.",
+    action="store_true",
+    help="Whether or not to refresh system's arp cache.",
 )
 
 # Print report. Works with the arp command
 parser.add_argument(
     "-r",
     "--report",
-    choices=["yes", "no"],
+    action="store_true",
     help="Print results to a text file. Defaults to no. Works with the arp command.",
 )
 
@@ -194,23 +194,18 @@ else:
     _verbose = False
 
 if args.cache:
-    if args.cache.lower().strip() == "yes":
-        _cache = True
-    else:
-        _cache = False
+    _cache = True
 
 if args.report:
-    if args.report.lower().strip() == "yes":
-        _report = True
-    else:
-        _report = False
+    _report = True
 
 # print("Target,  Timeout,  Cache,  Verbose,  Report")
 # print("{}  {}  {}  {}  {}".format(_target, _timeout, _cache, _verbose, _report))
 
 if _verbose:
+    print("Arping\n\tTarget\t\t\tTimeout\t\tCache\t\tVerbose\t\tReport")
     print(
-        "ARPing Target: {}\tTimeout: {}\tCache? {}\tVerbose? {}\tReport? {}".format(
+        "\t{}\t\t{}\t\t{}\t\t{}\t\t{}".format(
             _target, _timeout, _cache, _verbose, _report
         )
     )
