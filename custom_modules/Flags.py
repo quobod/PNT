@@ -1,0 +1,3 @@
+SYN_FLAG = "S"
+ACK_FLAG = "A"
+RST_FLAT = "R"
