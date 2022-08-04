@@ -1,4 +1,3 @@
-from argparse import ArgumentError
 import nmap
 from sympy import false
 from custom_modules.ConsoleMessenger import CONSOLE_MESSENGER_SWITCH as cms
@@ -23,32 +22,66 @@ def is_port_open(host=None, port=None, verbose=False, timeout=5, report=False):
             nm_scanner.scan(host, port)
             state = nm_scanner[host].state()
             proto = nm_scanner[host].all_protocols()
-            tcp_keys = nm_scanner[host]["tcp"].keys()
+            # tcp_keys = nm_scanner[host]["tcp"].keys()
             command = nm_scanner.command_line()
             scan_info = nm_scanner.scaninfo()
             if verbose:
-                print("Command: {}".format(command))
-                print("Host State: {}".format(state))
-                header = "Port{}{}State{}{}{}Response{}{}Service".format(
-                    "\t", "\t", "\t", "\t", "\t", "\t", "\t"
-                )
-                print("{}".format(header))
-                print("-" * len(header) * 3)
-                for v in tcp_keys:
-                    tcp = nm_scanner[host]["tcp"][v]
-                    _state = tcp["state"]
-                    _status = tcp["reason"]
-                    _service = tcp["name"]
-                    print("{}\t\t{}\t\t{}\t\t{}".format(v, _state, _status, _service))
-        except KeyError as ke:
-            msg = custom(255, 100, 88, "Key: {} does not exist".format(ke))
-            print("\nError: {}\n".format(msg))
+                verbose_output(host, nm_scanner, state, command)
+
+            return nm_scanner
+        except Exception as ex:
+            msg = custom(255, 255, 255, "{} does not exist".format(ex))
+            error = custom(255, 100, 88, "\nScan Error: ")
+            print("{}{}\n".format(error, msg))
     else:
-        raise ArgumentError(
-            "Expecting host and port arguments but received {} and {}".format(
-                host, port
-            )
+        message = "Expecting host and port arguments but received Host: {} and Port: {}".format(
+            host, port
         )
+
+        raise ValueError(message)
+
+
+def verbose_output(host, nm_scanner, state, command):
+    print("Command: {}".format(command))
+    print("Host State: {}".format(state))
+
+    if "tcp" in nm_scanner[host]:
+        tcp_info(host, nm_scanner)
+
+    elif "udp" in nm_scanner[host]:
+        udp_info(host, nm_scanner)
+
+
+def udp_info(host, nm_scanner):
+    header = "Port{}{}State{}{}{}Response{}{}Service".format(
+        "\t", "\t", "\t", "\t", "\t", "\t", "\t"
+    )
+    print("{}".format(header))
+    print("-" * len(header) * 3)
+
+    udp_keys = nm_scanner[host]["udp"].keys()
+    for u in udp_keys:
+        udp = nm_scanner[host]["udp"][u]
+        _state = udp["state"]
+        _status = udp["reason"]
+        _service = udp["name"]
+        print("{}\t\t{}\t\t{}\t\t{}".format(u, _state, _status, _service))
+
+
+def tcp_info(host, nm_scanner):
+    header = "Port{}{}State{}{}Response{}{}Service".format(
+        "\t", "\t", "\t", "\t", "\t", "\t"
+    )
+    print("{}".format(header))
+    print("-" * len(header) * 3 - 4)
+
+    tcp_keys = nm_scanner[host]["tcp"].keys()
+    for v in tcp_keys:
+        tcp = nm_scanner[host]["tcp"][v]
+        _state = tcp["state"]
+        _status = tcp["reason"]
+        _service = tcp["name"]
+        print("{}\t\t{}\t\t{}\t\t\t{}".format(v, _state, _status, _service))
 
 
 def start_scan(host, start_port, verbose, timeout, report):

@@ -16,6 +16,7 @@ port_range = False
 sport = None
 eport = None
 netface, local_addr, host = return_route()
+scan_results = ""
 
 desc = "This program scans the given port(s) of the given host"
 epil = "Scan a port or range of ports of hosts on the network"
@@ -202,10 +203,12 @@ if args.nmap:
             port_range = False
             sport = int(args.ports)
 
+    global scan_results
+
     if port_range:
-        nmap(host, (sport, eport), None, verbose, timeout, report)
+        scan_results = nmap(host, (sport, eport), None, verbose, timeout, report)
     else:
-        nmap(host, sport, eport, verbose, timeout, report)
+        scan_results = nmap(host, sport, eport, verbose, timeout, report)
 
 
 # Quiet mode
@@ -219,3 +222,6 @@ elif args.verbose >= 1:
 # Default mode run silently
 else:
     run_default_mode(cus, args)
+
+
+print(scan_results)
