@@ -10,6 +10,7 @@ from custom_modules.PatternConstants import FILE_EXTENSION as fe
 TITLE = "NmapPortScanner tests"
 
 host = "192.168.1.1"
+hosts = "192.168.1.0/24"
 port = "631"
 ports = "1-1001"
 verbose = True
@@ -30,23 +31,16 @@ class Tests(unittest.TestCase):  # creating the class
 
 class TestIsPortOpenMethod(unittest.TestCase):
     def test_return_not_none(self):
-        self.assertIsNotNone(ipo(host, port, verbose, timeout, report))
+        scan1 = ipo(host, port, verbose, timeout, report)
+        scan2 = ipo(host, ports, verbose, timeout, report)
+
+        self.assertIsNotNone(scan1)
+        self.assertIsNotNone(scan2)
 
     def test_raise_argument_error(self):
         self.assertRaises(ValueError, ipo, None, None, verbose, timeout, report)
         self.assertRaises(ValueError, ipo, host, None, verbose, timeout, report)
         self.assertRaises(ValueError, ipo, None, port, verbose, timeout, report)
-
-    def test_return_object(self):
-        results = ipo(host, port, verbose, timeout, report)
-
-        # Print hosts
-        for i, h in enumerate(results.all_hosts()):
-            print("{}.\t{}".format(i, h))
-
-        # Print host names
-        for i, h in enumerate(results.all_hosts()):
-            print("{}.\tHost: {}\tName: {}".format(i, h, results[h].hostname()))
 
 
 if __name__ == "__main__":
