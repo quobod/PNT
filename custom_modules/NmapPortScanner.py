@@ -1,13 +1,7 @@
 import nmap
 from custom_modules.ConsoleMessenger import CONSOLE_MESSENGER_SWITCH as cms
-from custom_modules.Printer import print_this as prt
 from custom_modules.TypeTester import (
-    arg_is_a_dict,
-    arg_is_a_list,
     arg_is_a_string,
-    arg_is_a_tuple,
-    arg_is_an_int,
-    arg_is_a_float,
 )
 
 custom = cms["custom"]
@@ -15,17 +9,30 @@ custom = cms["custom"]
 """ 
     Connects to given host at the given port to deteremine whether the host is up and state of the port.
     @Param host String: IP address or range 
-    @Param port Striing: The connection port
-    @Param verbose Boolean: Optional - If true, increase verbsoity
-    @Param timeout Integer: Optional - Sets the time to give up
-    @Param report Boolean: Optional - If true, print results to file
+    @Param port Striing: The connection port or port range
 """
 
 
-def is_port_open(host=None, port=None, verbose=False, timeout=5, report=False):
+def is_port_open(host=None, port=None):
     nm_scanner = None
 
-    if not host == None and not port == None:
+    if not arg_is_a_string(host):
+        msg = "[{}] must be a string, but received a {}".format(host, type(host))
+        cmsg = custom(255, 100, 100, msg)
+        emsg = custom(255, 255, 255, "Invalid Argument: {}".format(host))
+        message = "{}\t{}".format(emsg, cmsg)
+
+        raise ValueError(message)
+
+    elif not arg_is_a_string(port):
+        msg = "[{}] must be a string, but received a {}".format(port, type(port))
+        cmsg = custom(255, 100, 100, msg)
+        emsg = custom(255, 255, 255, "Invalid Argument: {}".format(port))
+        message = "{}\t{}".format(emsg, cmsg)
+
+        raise ValueError(message)
+
+    elif not host == None and not port == None:
         nm_scanner = nmap.PortScanner()
 
         nm_scanner.scan(str(host), str(port))

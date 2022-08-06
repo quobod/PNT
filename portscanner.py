@@ -3,9 +3,10 @@
 import argparse
 import os
 from custom_modules.ConsoleMessenger import CONSOLE_MESSENGER_SWITCH as cms
-from custom_modules.PortScanner import check_port as chp
-from custom_modules.NmapPortScanner import scan_port_config as nmap
+from custom_modules.PortScanner import is_port_open as ipo
+from custom_modules.NmapPortScanner import is_port_open as nmap
 from custom_modules.LocalConfigParser import return_route
+from custom_modules.PortScannerResultsHandler import handle_results as handler
 
 cus = cms["custom"]
 msg = None
@@ -43,7 +44,7 @@ group = parser.add_mutually_exclusive_group()
 
 # verbosity level
 group.add_argument(
-    "-v", "--verbose", help="Increase output verbosity", action="count", default=0
+    "-v", "--verbose", help="Increase output verbosity", action="store_true"
 )
 
 # run program silently
@@ -108,44 +109,21 @@ def run_quiet_mode(cus, args):
             ports_split = args.ports.split("-")
             sport = int(ports_split[0])
             eport = int(ports_split[1])
-            ports = (sport, eport)
+            ports = range(sport, eport)
             port_range = True
         else:
             sport = int(args.ports)
 
     if port_range:
-        chp(host, ports, None, False, timeout)
+        for port in ports:
+            port_open = ipo(host, port, verbose, timeout)
+            if port_open:
+                print("{} is open".format(port))
     else:
-        chp(host, sport, None, False, timeout)
+        port_open = ipo(host, sport, None, False, timeout)
 
-
-def run_verbose_level_1_mode(cus, args):
-    msg = "Running program with level {} verbosity".format(args.verbose)
-    cmsg = cus(177, 240, 177, msg)
-
-    global port_range
-
-    if args.addr:
-        host = args.addr
-
-    if args.timeout:
-        global timeout
-        timeout = args.timeout
-
-    if args.ports:
-        if "-" in args.ports:
-            ports_split = args.ports.split("-")
-            sport = int(ports_split[0])
-            eport = int(ports_split[1])
-            ports = (sport, eport)
-            port_range = True
-        else:
-            sport = int(args.ports)
-
-    if port_range:
-        chp(host, ports, None, True, timeout)
-    else:
-        chp(host, sport, None, True, timeout)
+        if port_open:
+            print("{} is open".format(port))
 
 
 def run_default_mode(cus, args):
@@ -167,7 +145,7 @@ def run_default_mode(cus, args):
             ports_split = args.ports.split("-")
             sport = int(ports_split[0])
             eport = int(ports_split[1])
-            ports = (sport, eport)
+            ports = range(sport, eport)
             port_range = True
         else:
             sport = int(args.ports)
@@ -175,9 +153,20 @@ def run_default_mode(cus, args):
         port_range = False
 
     if port_range:
-        chp(host, ports, None, False, timeout)
+        for port in ports:
+            print("Scanning port {}".format(port))
+            port_open = ipo(host, port, verbose, timeout)
+            if port_open:
+                print("Port {} is open\n".format(port))
+            else:
+                print("Port {} is closed\n".format(port))
     else:
-        chp(host, sport, None, False, timeout)
+        port_open = ipo(host, sport, None, False, timeout)
+
+        if port_open:
+            print("Port{} is open\n".format(port))
+        else:
+            print("Port {} is closed\n".format(port))
 
 
 if args.nmap:
@@ -194,21 +183,11 @@ if args.nmap:
         report = True
 
     if args.ports:
-        if "-" in args.ports:
-            ports_split = args.ports.split("-")
-            sport = int(ports_split[0])
-            eport = int(ports_split[1])
-            port_range = True
-        else:
-            port_range = False
-            sport = int(args.ports)
+        ports = args.ports
 
-    global scan_results
+    scan_results = nmap(host, ports)
 
-    if port_range:
-        scan_results = nmap(host, (sport, eport), None, verbose, timeout, report)
-    else:
-        scan_results = nmap(host, sport, eport, verbose, timeout, report)
+    handler(scan_results)
 
 
 # Quiet mode
