@@ -170,7 +170,7 @@ def run_verbose_mode(cust, args):
                 print("{}".format(cus_msg_port_open))
             else:
                 msg_port_closed = "Port {} is closed".format(port)
-                cus_msg_port_closed = cus(90, 90, 90, msg_port_closed)
+                cus_msg_port_closed = cus(100, 100, 100, msg_port_closed)
                 print("{}".format(cus_msg_port_closed))
     else:
         msg_host = "Scanning Host: {}".format(host)
@@ -187,7 +187,7 @@ def run_verbose_mode(cust, args):
             print("{}".format(cus_msg_port_open))
         else:
             msg_port_closed = "Port {} is closed".format(sport)
-            cus_msg_port_closed = cus(90, 90, 90, msg_port_closed)
+            cus_msg_port_closed = cus(100, 100, 100, msg_port_closed)
             print("{}".format(cus_msg_port_closed))
 
 
