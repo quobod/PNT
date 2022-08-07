@@ -151,9 +151,9 @@ def run_verbose_mode(cust, args):
         else:
             sport = int(args.ports)
 
-    msg = "\t\t\tPort Scanner"
+    msg = "Port Scanner"
     cmsg = cus(177, 200, 177, msg)
-    print("\n\t\t\t{}\n".format(cmsg) + "-" * 75)
+    print("\n\t\t\t\t{}\n".format(cmsg) + "-" * 75)
 
     if port_range:
         msg_host = "Scanning Host: {}".format(host)
@@ -165,7 +165,13 @@ def run_verbose_mode(cust, args):
         for port in ports:
             port_open = ipo(host, port, verbose, timeout)
             if port_open:
-                print("Port {} is open".format(port))
+                msg_port_open = "Port {} is open".format(port)
+                cus_msg_port_open = cus(255, 255, 255, msg_port_open)
+                print("{}".format(cus_msg_port_open))
+            else:
+                msg_port_closed = "Port {} is closed".format(port)
+                cus_msg_port_closed = cus(90, 90, 90, msg_port_closed)
+                print("{}".format(cus_msg_port_closed))
     else:
         msg_host = "Scanning Host: {}".format(host)
         cus_msg_host = cus(170, 170, 255, msg_host)
@@ -176,7 +182,13 @@ def run_verbose_mode(cust, args):
         port_open = ipo(host, sport, verbose, timeout)
 
         if port_open:
-            print("Port {} is open".format(sport))
+            msg_port_open = "Port {} is open".format(sport)
+            cus_msg_port_open = cus(255, 255, 255, msg_port_open)
+            print("{}".format(cus_msg_port_open))
+        else:
+            msg_port_closed = "Port {} is closed".format(sport)
+            cus_msg_port_closed = cus(90, 90, 90, msg_port_closed)
+            print("{}".format(cus_msg_port_closed))
 
 
 def run_default_mode(cus, args):
