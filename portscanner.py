@@ -126,6 +126,43 @@ def run_quiet_mode(cus, args):
             print("{} is open".format(port))
 
 
+def run_verbose_mode(cust, args):
+    global timeout
+    global sport, eport, ports
+    global port_range
+
+    msg = "Running program in verbose"
+    cmsg = cus(177, 200, 177, msg)
+    print("\n\t\t\t{}\n".format(cmsg) + "-" * 75 + "\n")
+
+    if args.addr:
+        host = args.addr
+
+    if args.timeout:
+        timeout = args.timeout
+
+    if args.ports:
+        if "-" in args.ports:
+            ports_split = args.ports.split("-")
+            sport = int(ports_split[0])
+            eport = int(ports_split[1])
+            ports = range(sport, eport)
+            port_range = True
+        else:
+            sport = int(args.ports)
+
+    if port_range:
+        for port in ports:
+            port_open = ipo(host, port, verbose, timeout)
+            if port_open:
+                print("{} is open".format(port))
+    else:
+        port_open = ipo(host, sport, verbose, timeout)
+
+        if port_open:
+            print("{} is open".format(port))
+
+
 def run_default_mode(cus, args):
     msg = "Run program with default config"
     cmsg = cus(177, 200, 177, msg)
@@ -195,8 +232,8 @@ elif args.quiet:
     run_quiet_mode(cus, args)
 
 # Level 1 verbose mode
-elif args.verbose >= 1:
-    run_verbose_level_1_mode(cus, args)
+elif args.verbose:
+    run_verbose_mode(cus, args)
 
 # Default mode run silently
 else:

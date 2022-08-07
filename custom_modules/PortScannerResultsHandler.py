@@ -102,7 +102,7 @@ def handle_results(results):
 
                     dict_tcp_keys = results[_host][protocol].keys()
 
-                    print("Scanned Ports")
+                    print("Open Ports")
 
                     print(*dict_tcp_keys, sep="\t")
 
