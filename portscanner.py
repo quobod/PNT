@@ -109,8 +109,12 @@ def run_quiet_mode(cus, args):
             ports_split = args.ports.split("-")
             sport = int(ports_split[0])
             eport = int(ports_split[1])
-            ports = range(sport, eport)
-            port_range = True
+
+            if eport < sport:
+                port_range = False
+            else:
+                ports = range(sport, eport)
+                port_range = True
         else:
             sport = int(args.ports)
 
@@ -192,17 +196,14 @@ def run_verbose_mode(cust, args):
 
 
 def run_default_mode(cus, args):
-    msg = "Run program with default config"
-    cmsg = cus(177, 200, 177, msg)
-
-    global port_range, sport, eport
+    global timeout
+    global sport, eport, ports
+    global port_range
 
     if args.addr:
         host = args.addr
 
     if args.timeout:
-        global timeout
-
         timeout = args.timeout
 
     if args.ports:
@@ -210,30 +211,56 @@ def run_default_mode(cus, args):
             ports_split = args.ports.split("-")
             sport = int(ports_split[0])
             eport = int(ports_split[1])
-            ports = range(sport, eport)
-            port_range = True
+
+            if eport < sport:
+                port_range = False
+            else:
+                ports = range(sport, eport)
+                port_range = True
         else:
             sport = int(args.ports)
-    else:
-        port_range = False
+
+    msg = "Port Scanner"
+    cmsg = cus(177, 200, 177, msg)
+    # print("\n\t\t\t\t{}\n".format(cmsg) + "-" * 75)
 
     if port_range:
+        msg_host = "Scanning Host: {}".format(host)
+        cus_msg_host = cus(170, 170, 255, msg_host)
+        msg_ports = "Ports: {}-{}".format(sport, eport)
+        cus_msg_ports = cus(200, 200, 245, msg_ports)
+        # print("{}{}\n".format(cus_msg_host, cus_msg_ports))
+
         for port in ports:
-            print("Scanning port {}".format(port))
             port_open = ipo(host, port, verbose, timeout)
             if port_open:
-                print("Port {} is open\n".format(port))
+                msg_port_open = "Port {} is open".format(port)
+                cus_msg_port_open = cus(255, 255, 255, msg_port_open)
+                print("{}".format(cus_msg_port_open))
             else:
-                print("Port {} is closed\n".format(port))
+                msg_port_closed = "Port {} is closed".format(port)
+                cus_msg_port_closed = cus(100, 100, 100, msg_port_closed)
+                # print("{}".format(cus_msg_port_closed))
     else:
-        port_open = ipo(host, sport, None, False, timeout)
+        msg_host = "Scanning Host: {}".format(host)
+        cus_msg_host = cus(170, 170, 255, msg_host)
+        msg_port = "Port: {}".format(sport)
+        cus_msg_port = cus(200, 200, 245, msg_port)
+        # print("{}{}\n".format(cus_msg_host, cus_msg_port))
+
+        port_open = ipo(host, sport, verbose, timeout)
 
         if port_open:
-            print("Port{} is open\n".format(port))
+            msg_port_open = "Port {} is open".format(sport)
+            cus_msg_port_open = cus(255, 255, 255, msg_port_open)
+            print("{}".format(cus_msg_port_open))
         else:
-            print("Port {} is closed\n".format(port))
+            msg_port_closed = "Port {} is closed".format(sport)
+            cus_msg_port_closed = cus(100, 100, 100, msg_port_closed)
+            # print("{}".format(cus_msg_port_closed))
 
 
+# Use Nmap
 if args.nmap:
     if args.addr:
         host = args.addr
@@ -253,7 +280,6 @@ if args.nmap:
     scan_results = nmap(host, ports)
 
     handler(scan_results)
-
 
 # Quiet mode
 elif args.quiet:
