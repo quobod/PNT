@@ -7,14 +7,6 @@ from custom_modules.TypeTester import arg_is_a_string as aias
 from custom_modules.FileOperator import append_file as af
 from custom_modules.PlatformConstants import LINE_SEP as lsep
 
-# host = "192.168.1.1"
-# hosts = "192.168.1.0/24"
-# port = "631"
-# ports = "1-1001"
-# verbose = True
-# report = True
-# timeout = 2
-
 
 def handle_results(results):
     protocols = None
