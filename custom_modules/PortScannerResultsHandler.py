@@ -3,7 +3,7 @@
 
 from Threading import Thread
 from custom_modules.NmapPortScanner import is_port_open as ipo
-from custom_modules.TypeTester import arg_is_a_string as aias
+from custom_modules.TypeTester import arg_is_a_string as aias, arg_is_a_list as aial
 from custom_modules.FileOperator import append_file as af
 from custom_modules.PlatformConstants import LINE_SEP as lsep
 
@@ -136,7 +136,7 @@ def handle_results(results):
 
 
 # Print results to file
-def print_report(results):
+def print_nmap_report(results):
     protocols = None
     scan_info = None
     dict_tcp_keys = None
@@ -237,5 +237,17 @@ def print_report(results):
                         data.append("Conf:\t\t{}{}".format(conf, lsep))
 
                         data.append("CPE:\t\t{}{}{}".format(cpe, lsep, lsep))
-    results = af("port-scanner-results.txt", data)
+    results = af("nmap-port-scanner-results.txt", data)
     return results
+
+
+def print_report(data):
+    if not data == None:
+        if aial(data):
+            collection = []
+            for d in data:
+                collection.append(d + "{}".format(lsep))
+            if len(collection) > 0:
+                report = af("port-scanner-results.txt", collection)
+                return report
+    return None

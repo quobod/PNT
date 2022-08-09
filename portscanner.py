@@ -8,8 +8,10 @@ from custom_modules.NmapPortScanner import is_port_open as nmap
 from custom_modules.LocalConfigParser import return_route
 from custom_modules.PortScannerResultsHandler import (
     handle_results as handler,
+    print_nmap_report as pnr,
     print_report as pr,
 )
+from custom_modules.PlatformConstants import LINE_SEP as lsep
 
 cus = cms["custom"]
 msg = None
@@ -140,12 +142,17 @@ def run_verbose_mode(cust, args):
     global timeout
     global sport, eport, ports
     global port_range
+    report = False
+    data = []
 
     if args.addr:
         host = args.addr
 
     if args.timeout:
         timeout = args.timeout
+
+    if args.report:
+        report = True
 
     if args.ports:
         if "-" in args.ports:
@@ -164,6 +171,7 @@ def run_verbose_mode(cust, args):
     msg = "Port Scanner"
     cmsg = cus(177, 200, 177, msg)
     print("\n\t\t\t\t{}\n".format(cmsg) + "-" * 75)
+    data.append("{}\t\t\t\t{}{}".format(lsep, cmsg, lsep) + "-" * 75)
 
     if port_range:
         msg_host = "Scanning Host: {}".format(host)
@@ -171,6 +179,7 @@ def run_verbose_mode(cust, args):
         msg_ports = "Ports: {}-{}".format(sport, eport)
         cus_msg_ports = cus(200, 200, 245, msg_ports)
         print("{}{}\n".format(cus_msg_host, cus_msg_ports))
+        data.append("{}{}{}".format(cus_msg_host, cus_msg_ports, lsep))
 
         for port in ports:
             port_open = ipo(host, port, verbose, timeout)
@@ -178,16 +187,20 @@ def run_verbose_mode(cust, args):
                 msg_port_open = "Port {} is open".format(port)
                 cus_msg_port_open = cus(255, 255, 255, msg_port_open)
                 print("{}".format(cus_msg_port_open))
+                data.append("{}{}".format(cus_msg_port_open, lsep))
+
             else:
                 msg_port_closed = "Port {} is closed".format(port)
                 cus_msg_port_closed = cus(100, 100, 100, msg_port_closed)
                 print("{}".format(cus_msg_port_closed))
+                data.append("{}{}".format(cus_msg_port_closed, lsep))
     else:
         msg_host = "Scanning Host: {}".format(host)
         cus_msg_host = cus(170, 170, 255, msg_host)
         msg_port = "Port: {}".format(sport)
         cus_msg_port = cus(200, 200, 245, msg_port)
         print("{}{}\n".format(cus_msg_host, cus_msg_port))
+        data.append("{}{}{}".format(cus_msg_host, cus_msg_port, lsep))
 
         port_open = ipo(host, sport, verbose, timeout)
 
@@ -195,22 +208,32 @@ def run_verbose_mode(cust, args):
             msg_port_open = "Port {} is open".format(sport)
             cus_msg_port_open = cus(255, 255, 255, msg_port_open)
             print("{}".format(cus_msg_port_open))
+            data.append("{}{}".format(cus_msg_port_open, lsep))
         else:
             msg_port_closed = "Port {} is closed".format(sport)
             cus_msg_port_closed = cus(100, 100, 100, msg_port_closed)
             print("{}".format(cus_msg_port_closed))
+            data.append("{}{}".format(cus_msg_port_closed, lsep))
+
+    if report:
+        pr(data)
 
 
 def run_default_mode(cus, args):
     global timeout
     global sport, eport, ports
     global port_range
+    report = False
+    data = []
 
     if args.addr:
         host = args.addr
 
     if args.timeout:
         timeout = args.timeout
+
+    if args.report:
+        report = True
 
     if args.ports:
         if "-" in args.ports:
@@ -234,6 +257,7 @@ def run_default_mode(cus, args):
                 msg_port_open = "Port {} is open".format(port)
                 cus_msg_port_open = cus(255, 255, 255, msg_port_open)
                 print("{}".format(cus_msg_port_open))
+                data.append("{}{}".format(cus_msg_port_open, lsep))
     else:
         port_open = ipo(host, sport, verbose, timeout)
 
@@ -241,6 +265,10 @@ def run_default_mode(cus, args):
             msg_port_open = "Port {} is open".format(sport)
             cus_msg_port_open = cus(255, 255, 255, msg_port_open)
             print("{}".format(cus_msg_port_open))
+            data.append("{}{}".format(cus_msg_port_open, lsep))
+
+    if report:
+        pr(data)
 
 
 # Use Nmap
@@ -262,7 +290,7 @@ if args.nmap:
     handler(scan_results)
 
     if report:
-        report = pr(scan_results)
+        report = pnr(scan_results)
 
         if report:
             print("Report Printed")
