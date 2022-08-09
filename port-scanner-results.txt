@@ -1,0 +1,68 @@
+----------------------------------------------------------------------------------------------------
+Host:	192.168.1.1
+State:	up
+Protocol:	tcp
+Scan Info =		Action: connect	Ports: 20-631
+Open Ports
+21	53	80	443	548	631	
+
+Port:		21
+State:		filtered
+Reason:		no-response
+Name:		ftp
+Product:		
+Version:		
+Extra:		
+Conf:		3
+CPE:		
+
+Port:		53
+State:		open
+Reason:		syn-ack
+Name:		domain
+Product:		dnsmasq
+Version:		2.39
+Extra:		
+Conf:		10
+CPE:		cpe:/a:thekelleys:dnsmasq:2.39
+
+Port:		80
+State:		open
+Reason:		syn-ack
+Name:		http
+Product:		uhttpd
+Version:		1.0.0
+Extra:		Netgear R7800 WAP http config
+Conf:		10
+CPE:		cpe:/h:netgear:r7800
+
+Port:		443
+State:		open
+Reason:		syn-ack
+Name:		https
+Product:		
+Version:		
+Extra:		
+Conf:		3
+CPE:		
+
+Port:		548
+State:		open
+Reason:		syn-ack
+Name:		afp
+Product:		Netatalk
+Version:		2.2.1
+Extra:		name: R7800; protocol 3.3
+Conf:		10
+CPE:		cpe:/a:netatalk:netatalk:2.2.1
+
+Port:		631
+State:		open
+Reason:		syn-ack
+Name:		ipp
+Product:		
+Version:		
+Extra:		
+Conf:		3
+CPE:		
+

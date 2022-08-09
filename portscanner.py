@@ -6,7 +6,10 @@ from custom_modules.ConsoleMessenger import CONSOLE_MESSENGER_SWITCH as cms
 from custom_modules.PortScanner import is_port_open as ipo
 from custom_modules.NmapPortScanner import is_port_open as nmap
 from custom_modules.LocalConfigParser import return_route
-from custom_modules.PortScannerResultsHandler import handle_results as handler
+from custom_modules.PortScannerResultsHandler import (
+    handle_results as handler,
+    print_report as pr,
+)
 
 cus = cms["custom"]
 msg = None
@@ -258,17 +261,22 @@ if args.nmap:
 
     handler(scan_results)
 
+    if report:
+        report = pr(scan_results)
+
+        if report:
+            print("Report Printed")
+        else:
+            print("Report Error")
+
 # Quiet mode
 elif args.quiet:
-    run_quiet_mode(cus, args)
+    run_default_mode(cus, args)
 
-# Level 1 verbose mode
+# Verbose mode
 elif args.verbose:
     run_verbose_mode(cus, args)
 
 # Default mode run silently
 else:
     run_default_mode(cus, args)
-
-
-print(scan_results)
