@@ -86,7 +86,12 @@ parser.add_argument(
 )
 
 # use nmap port scanning
-parser.add_argument("-n", "--nmap", action="store_true", help="Use Nmap port scanning")
+parser.add_argument(
+    "-n",
+    "--nmap",
+    action="store_true",
+    help="Use Nmap port scanning. Can take a single address or a range of address: e.g. 10.1.10.1/8 or 192.168.1.0/24",
+)
 
 # print results to file
 parser.add_argument(
