@@ -47,7 +47,10 @@ group = parser.add_mutually_exclusive_group()
 
 # verbosity level
 group.add_argument(
-    "-v", "--verbose", help="Increase output verbosity", action="store_true"
+    "-v",
+    "--verbose",
+    help="Increase output verbosity. Does not work with the -n option.",
+    action="store_true",
 )
 
 # run program silently
