@@ -146,11 +146,8 @@ def handle_results(results):
 # Print results to file
 def print_report(results):
     protocols = None
-    command = None
     scan_info = None
     dict_tcp_keys = None
-    csv = None
-    tcp = None
     state = None
     product = None
     reason = None
@@ -160,26 +157,6 @@ def print_report(results):
     conf = None
     data = []
     line = ""
-
-    # results = ipo(hosts, ports, verbose, timeout, report)
-
-    """if results[host].state:
-        state = results[host].state()
-
-    if results[host].all_protocols:
-        protocols = results[host].all_protocols()
-
-    if results.command_line:
-        command = results.command_line()
-
-    if results.scaninfo:
-        scan_info = results.scaninfo()
-
-    if "tcp" in results[host]:
-        dict_tcp_keys = results[host]["tcp"].keys()
-
-    if results.csv:
-        csv = results.csv"""
 
     all_hosts = results.all_hosts()
 
@@ -203,42 +180,20 @@ def print_report(results):
         if results.csv:
             csv = results.csv()
 
-        # print("-" * 100 + "{}".format(lsep))
-
         line = "-" * 100 + "{}".format(lsep)
 
         data.append(line)
 
-        # print("Host:\t{}".format(_host))
-
         data.append("Host:\t{}{}".format(_host, lsep))
 
-        # print("State:\t{}".format(state))
-
         data.append("State:\t{}{}".format(state, lsep))
-
-        # print("Command:\t{}".format(command))
-
-        # print("Scann Info:\t{}".format(scan_info))
-
-        # print("CSV:\t{}".format(csv))
-
-        # print("-" * 100 + "\n\n")
 
         if protocols:
 
             for protocol in protocols:
                 info = scan_info[protocol]
 
-                # print("Protocol:\t{}".format(protocol))
-
                 data.append("Protocol:\t{}{}".format(protocol, lsep))
-
-                # print(
-                #     "Scan Info =\t\tAction: {}\tPorts: {}".format(
-                #         info["method"], info["services"]
-                #     )
-                # )
 
                 data.append(
                     "Scan Info =\t\tAction: {}\tPorts: {}{}".format(
@@ -250,11 +205,7 @@ def print_report(results):
 
                     dict_tcp_keys = results[_host][protocol].keys()
 
-                    # print("Open Ports")
-
                     data.append("Open Ports{}".format(lsep))
-
-                    # print(*dict_tcp_keys, sep="\t")
 
                     line = ""
 
@@ -263,14 +214,10 @@ def print_report(results):
 
                     data.append(line)
 
-                    # print("{}".format(lsep))
-
                     data.append("{}{}".format(lsep, lsep))
 
                     for tcp_key in dict_tcp_keys:
                         key = results[_host][protocol][tcp_key]
-
-                        # print("TCP Key:\t{}".format(key))
 
                         state = key["state"]
                         reason = key["reason"]
@@ -281,39 +228,21 @@ def print_report(results):
                         conf = key["conf"]
                         cpe = key["cpe"]
 
-                        # print("Port:\t\t{}".format(tcp_key))
-
                         data.append("Port:\t\t{}{}".format(tcp_key, lsep))
-
-                        # print("State:\t\t{}".format(state))
 
                         data.append("State:\t\t{}{}".format(state, lsep))
 
-                        # print("Reason:\t\t{}".format(reason))
-
                         data.append("Reason:\t\t{}{}".format(reason, lsep))
-
-                        # print("Name:\t\t{}".format(name))
 
                         data.append("Name:\t\t{}{}".format(name, lsep))
 
-                        # print("Product:\t\t{}".format(product))
-
                         data.append("Product:\t\t{}{}".format(product, lsep))
-
-                        # print("Version:\t\t{}".format(version))
 
                         data.append("Version:\t\t{}{}".format(version, lsep))
 
-                        # print("Extra:\t\t{}".format(extra))
-
                         data.append("Extra:\t\t{}{}".format(extra, lsep))
 
-                        # print("Conf:\t\t{}".format(conf))
-
                         data.append("Conf:\t\t{}{}".format(conf, lsep))
-
-                        # print("CPE:\t\t{}\n".format(cpe))
 
                         data.append("CPE:\t\t{}{}{}".format(cpe, lsep, lsep))
     results = af("port-scanner-results.txt", data)
