@@ -102,47 +102,6 @@ parser.add_argument(
 args = parser.parse_args()
 
 
-def run_quiet_mode(cus, args):
-    global timeout
-    global sport, eport, ports
-    global port_range
-
-    msg = "Silently running program"
-    cmsg = cus(177, 200, 177, msg)
-    # print("\n\t\t\t{}\n".format(cmsg) + "-" * 75 + "\n")
-
-    if args.addr:
-        host = args.addr
-
-    if args.timeout:
-        timeout = args.timeout
-
-    if args.ports:
-        if "-" in args.ports:
-            ports_split = args.ports.split("-")
-            sport = int(ports_split[0])
-            eport = int(ports_split[1])
-
-            if eport < sport:
-                port_range = False
-            else:
-                ports = range(sport, eport)
-                port_range = True
-        else:
-            sport = int(args.ports)
-
-    if port_range:
-        for port in ports:
-            port_open = ipo(host, port, verbose, timeout)
-            if port_open:
-                print("{} is open".format(port))
-    else:
-        port_open = ipo(host, sport, None, False, timeout)
-
-        if port_open:
-            print("{} is open".format(port))
-
-
 def run_verbose_mode(cust, args):
     global timeout
     global sport, eport, ports
@@ -253,6 +212,16 @@ def run_default_mode(cus, args):
                 port_range = True
         else:
             sport = int(args.ports)
+
+    msg = "Port Scanner"
+    cmsg = cus(177, 200, 177, msg)
+    data.append("{}\t\t\t\t{}{}".format(lsep, cmsg, lsep) + "-" * 75)
+
+    msg_host = "Scanning Host: {}".format(host)
+    cus_msg_host = cus(170, 170, 255, msg_host)
+    msg_ports = "Ports: {}-{}".format(sport, eport)
+    cus_msg_ports = cus(200, 200, 245, msg_ports)
+    data.append("{}{}{}".format(cus_msg_host, cus_msg_ports, lsep))
 
     if port_range:
 
