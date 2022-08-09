@@ -251,9 +251,6 @@ if args.nmap:
     if args.timeout:
         timeout = args.timeout
 
-    if args.verbose:
-        verbose = True
-
     if args.report:
         report = True
 
