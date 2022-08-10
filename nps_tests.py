@@ -31,16 +31,16 @@ class Tests(unittest.TestCase):  # creating the class
 
 class TestIsPortOpenMethod(unittest.TestCase):
     def test_return_not_none(self):
-        scan1 = ipo(host, port, verbose, timeout, report)
-        scan2 = ipo(host, ports, verbose, timeout, report)
+        scan1 = ipo(host, port)
+        scan2 = ipo(host, ports)
 
         self.assertIsNotNone(scan1)
         self.assertIsNotNone(scan2)
 
     def test_raise_argument_error(self):
-        self.assertRaises(ValueError, ipo, None, None, verbose, timeout, report)
-        self.assertRaises(ValueError, ipo, host, None, verbose, timeout, report)
-        self.assertRaises(ValueError, ipo, None, port, verbose, timeout, report)
+        self.assertRaises(ValueError, ipo, None, None)
+        self.assertRaises(ValueError, ipo, host, None)
+        self.assertRaises(ValueError, ipo, None)
 
 
 if __name__ == "__main__":
